@@ -42,6 +42,7 @@ export const hexPubkeyValidator = /^\w{64}$/;
 
 export const profileRelays = [
   //"wss://nostr.688.org",
+  "wss://search.nos.today",
   "wss://relay.damus.io",
   "wss://nos.lol",
   "wss://relay.nostr.bg",
@@ -79,4 +80,4 @@ export const NewRocketProblem =
 
 export const relayHint = "relay.nostrocket.org";
 
-export const ZAPS_ENABLED = false;
+export const ZAPS_ENABLED = true;

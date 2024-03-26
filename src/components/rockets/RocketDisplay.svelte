@@ -24,6 +24,7 @@
   } from "carbon-components-svelte";
   import {
     ArrowRight,
+    Edit,
     FaceDissatisfiedFilled,
     Send,
     XAxis,
@@ -53,6 +54,8 @@
     }
   );
 
+  let userEditingProblem = false;
+  let userEditingMission = false;
   let selectedProblem = "";
 
   let newProblem = new Problem();
@@ -144,7 +147,7 @@
     <Tile>
       <Tile>
         <h3>THE PROBLEM:</h3>
-        {#if problem}<h5
+        {#if problem && !userEditingProblem}<h5
             style="cursor: pointer;"
             on:click={() => {
               goto(`${base}/nr/${rocket?.Name}/problems/${problem?.UID}`);
@@ -152,15 +155,29 @@
           >
             {problem.Title}
           </h5>
+
           {#if problem.Summary}<p style="font-style: italic;">
               {problem.Summary}
             </p>{/if}
+            {#if $currentUser?.pubkey == rocket.CreatedBy && rocket.ProblemID}
+            <Button
+              kind="ghost"
+              icon={Edit}
+              size="small"
+              iconDescription={"edit"}
+              on:click={() => {
+                userEditingProblem = true;
+              }}>Change this to a different problem</Button
+            >
+          {/if}
         {:else}
-          <p>
-            All Rockets begin with a problem to solve, but <CommentUser
-              pubkey={rocket.CreatedBy}
-            /> hasn't specified one yet.
-          </p>
+          {#if !problem}
+            <p>
+              All Rockets begin with a problem to solve, but <CommentUser
+                pubkey={rocket.CreatedBy}
+              /> hasn't specified one yet.
+            </p>
+          {/if}
           {#if $currentUser?.pubkey == rocket.CreatedBy}
             <Tile light style="border:solid;">
               <h4>
@@ -168,6 +185,13 @@
                   pubkey={rocket.CreatedBy}
                 />
               </h4>
+              {#if problem}
+                <Button
+                  on:click={() => {
+                    userEditingProblem = false;
+                  }}>Cancel</Button
+                >
+              {/if}
               <p>
                 It's important to let potential contributors know what problem <span
                   style="font:400;">{rocket.Name}</span
@@ -273,18 +297,35 @@
 
       <Tile>
         <h3>THE VISION:</h3>
-        {#if rocket.Mission}
-          <h6>{rocket.Mission}</h6>
+        {#if rocket.Mission && !userEditingMission}
+          <h6>
+            {rocket.Mission}
+            {#if $currentUser?.pubkey == rocket.CreatedBy && rocket.ProblemID}
+              <Button
+                kind="ghost"
+                icon={Edit}
+                size="small"
+                iconDescription={"edit"}
+                on:click={() => {
+                  mission = rocket?.Mission ?? mission;
+                  userEditingMission = true;
+                }}
+              />
+            {/if}
+          </h6>
         {:else}
-          <p>
-            Identifiying a problem to solve is a solid way to begin, but a great
-            Rocket also provides a vision of what it will add to the world.
-          </p>
+          {#if !userEditingMission}
+            <p>
+              Identifiying a problem to solve is a solid way to begin, but a
+              great Rocket also provides a vision of what it will add to the
+              world.
+            </p>
 
-          <p>
-            <CommentUser pubkey={rocket.CreatedBy} /> hasn't created a vision for
-            <span style="font-style:italic;">{rocket.Name}</span> yet.
-          </p>
+            <p>
+              <CommentUser pubkey={rocket.CreatedBy} /> hasn't created a vision for
+              <span style="font-style:italic;">{rocket.Name}</span> yet.
+            </p>
+          {/if}
           {#if $currentUser?.pubkey == rocket.CreatedBy && rocket.ProblemID}
             <Tile light style="border:solid;">
               <h4>
@@ -292,6 +333,13 @@
                   pubkey={rocket.CreatedBy}
                 />
               </h4>
+              {#if userEditingMission}
+                <Button
+                  on:click={() => {
+                    userEditingMission = false;
+                  }}>Cancel</Button
+                >
+              {/if}
               <MissionText />
               <Row>
                 <Column noGutterRight
@@ -309,6 +357,7 @@
                       rocket.Mission = mission;
                       let e = Create1031FromRocket(rocket);
                       e.publish();
+                      userEditingMission = false;
                     }}
                     size="field"
                     icon={Send}>PUBLISH</Button

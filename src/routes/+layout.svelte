@@ -35,6 +35,7 @@
       </Breadcrumb> -->
       <slot />
       {#if $notifications.length > 0}{#each $notifications as n}<ToastNotification
+            timeout={3_000}
             kind="info-square"
             lowContrast
             title="INFO"
@@ -62,7 +63,7 @@
             </div>
             
             <a
-              href="https://github.com/nostrocket/oxygen"
+              href="https://github.com/nostrocket"
               target="_blank"
               rel="noopener noreferrer">GitHub</a
             >
