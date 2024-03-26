@@ -23,12 +23,13 @@
     SkipToContent,
     Tag,
   } from "carbon-components-svelte";
-  import { Network_1, UserAvatarFilledAlt } from "carbon-icons-svelte";
+  import { Network_1, Help, UserAvatarFilledAlt } from "carbon-icons-svelte";
   import SettingsAdjust from "carbon-icons-svelte/lib/SettingsAdjust.svelte";
   import CommentUser from "../components/comments/CommentUser.svelte";
   import LoginNip07Button from "../components/elements/LoginNIP07Button.svelte";
   import { defaultRelays, profileRelays, testnet } from "../settings";
   import menu from "./menu";
+  import HelpPanel from "../components/FAQ/HelpPanel.svelte";
 
   let isSideNavOpen = false;
   let expandedByDefault = false;
@@ -90,6 +91,9 @@
         ><h6>{$bitcoinTip.height}</h6></a
       >
     </div>
+    <HeaderAction icon={Help}>
+      <HelpPanel />
+    </HeaderAction>
     <HeaderAction icon={Network_1}>
       <div style="width: 100%;padding:2px;margin-bottom:10%;">
         <h6>RELAYS [MUST]</h6>
